@@ -9,9 +9,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "biomed-multi-alignment"
-description = "**MAMMAL** (**M**olecular **A**ligned **M**ulti-**M**odal **A**rchitecture and **L**anguage), a flexible, multi-domain architecture with an adaptable task prompt syntax."
+description = "MAMMAL (Molecular Aligned Multi-Modal Architecture and Language), a flexible, multi-domain architecture with an adaptable task prompt syntax."
 authors = [["IBM Research",],]
-author_email="moshiko.raboh@ibm.com",
+author_email="moshiko.raboh@ibm.com"
 version = "0.0.2"
 readme = "README.md"
 # due to how PEP 440 defines version matching, prefer [incl, excl) definitions like below:
