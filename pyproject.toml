@@ -10,10 +10,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "biomed-multi-alignment"
 description = "MAMMAL (Molecular Aligned Multi-Modal Architecture and Language), a flexible, multi-domain architecture with an adaptable task prompt syntax."
-authors = [["IBM Research",],]
-author_email="moshiko.raboh@ibm.com"
+authors = [
+  {name="IBM Research"},
+  {name="Moshe Raboh", email="moshiko.raboh@ibm.com"}
+  ]
 version = "0.0.2"
 readme = "README.md"
+license = {file = "LICENSE.txt"}
 # due to how PEP 440 defines version matching, prefer [incl, excl) definitions like below:
 requires-python = ">=3.10, <3.13"
 dependencies = [
