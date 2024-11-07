@@ -1,11 +1,9 @@
 from functools import partial
-from typing import Any, Optional
+from typing import Any
 
-import numpy as np
 import pytorch_lightning as pl
 import torch
 from fuse.data.tokenizers.modular_tokenizer.op import ModularTokenizerOp
-from fuse.utils import NDict
 
 from mammal.examples.dti_bindingdb_kd.pl_data_module import (
     DtiBindingdbKdDataModule,
@@ -111,12 +109,12 @@ class DtiBindingdbKdTask(MammalTask):
         ground_truth_key: int | None = None,
         target_max_seq_length: int = 1250,
         drug_max_seq_length: int = 256,
-        encoder_input_max_seq_len: int | None = 1512,
+        encoder_input_max_seq_len: int = 1512,
         tokenizer_op: ModularTokenizerOp,
         norm_y_mean: float,
         norm_y_std: float,
         device: str | torch.device = "cpu",
-    ) -> str:
+    ) -> dict[str, Any]:
         """
         :param norm_y_mean: Used to normalize the values. Metrics will still be calculated with the original values for a fair evaluation.
                             Default value means - no normalization

@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 import pytorch_lightning as pl
 from fuse.data.datasets.dataset_default import DatasetDefault
 from fuse.data.ops.ops_read import OpReadDataframe
@@ -18,7 +20,7 @@ class CarcinogenicityDataModule(pl.LightningDataModule):
         tokenizer_op: ModularTokenizerOp,
         drug_max_seq_length: int,
         encoder_input_max_seq_len: int,
-        data_preprocessing: callable,
+        data_preprocessing: Callable,
         labels_max_seq_len: int,
     ) -> None:
         super().__init__()

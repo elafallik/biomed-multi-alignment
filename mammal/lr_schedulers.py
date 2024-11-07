@@ -7,7 +7,7 @@ from transformers import get_inverse_sqrt_schedule
 def inverse_sqrt_with_warmup_lr_scheduler(
     optimizer: Optimizer,
     num_warmup_steps: int = 10000,
-    timescale: int = None,
+    timescale: int = 1,
     last_epoch: int = -1,
 ) -> SequentialLR:
     """
@@ -21,7 +21,10 @@ def inverse_sqrt_with_warmup_lr_scheduler(
     """
     constant_sch = ConstantLR(optimizer, factor=1.0, total_iters=num_warmup_steps)
     inverse_sqrt_schedule = get_inverse_sqrt_schedule(
-        optimizer=optimizer, num_warmup_steps=0, timescale=1, last_epoch=last_epoch
+        optimizer=optimizer,
+        num_warmup_steps=0,
+        timescale=timescale,
+        last_epoch=last_epoch,
     )
     return SequentialLR(
         optimizer,

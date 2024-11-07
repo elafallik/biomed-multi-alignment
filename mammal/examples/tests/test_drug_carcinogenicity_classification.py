@@ -1,4 +1,3 @@
-import socket
 from pathlib import Path
 
 import hydra
@@ -43,7 +42,7 @@ def finetuned_model_dir(tmp_model_dir: str):
     return model_dir
 
 
-def test_finetune(finetuned_model_dir: str):
+def test_finetune(finetuned_model_dir: Path):
     # the actual work is done in the fixture, here we just read the finetuned model.
     model = Mammal.from_pretrained(
         pretrained_model_name_or_path=str(finetuned_model_dir / "best_epoch.ckpt")

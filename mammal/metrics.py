@@ -59,9 +59,7 @@ class MetricSeqAccuracy(MetricDefault):
             if sample_weight is not None:
                 sample_weight = np.concatenate(sample_weight)
 
-        assert (
-            pred.shape == target.shape
-        ), f"shape does not match {pred.shape=} <> {target.shape=}"
+        assert pred.shape == target.shape, f"shape does not match {pred.shape=} <> {target.shape=}"  # type: ignore[attr-defined]
 
         indices = target != self.ignore_index
         are_same_indicators = pred[indices] == target[indices]
@@ -75,7 +73,7 @@ class MetricSeqAccuracy(MetricDefault):
 def classification_metrics(
     name: str,
     class_position: int,
-    class_tokens: list[int],
+    class_tokens: list[str],
     tokenizer_op: ModularTokenizerOp,
     scores_key: str = SCORES,
     cls_preds_key: str = CLS_PRED,

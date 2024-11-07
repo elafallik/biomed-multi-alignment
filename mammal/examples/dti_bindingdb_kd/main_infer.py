@@ -2,10 +2,8 @@ import os
 
 import click
 from fuse.data.tokenizers.modular_tokenizer.op import ModularTokenizerOp
-from fuse.data.utils.collates import CollateDefault
 
 from mammal.examples.dti_bindingdb_kd.task import DtiBindingdbKdTask
-from mammal.keys import CLS_PRED, SCORES
 from mammal.model import Mammal
 
 

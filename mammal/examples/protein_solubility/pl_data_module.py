@@ -1,5 +1,6 @@
 import os
 import shutil
+from collections.abc import Callable
 
 import pandas as pd
 import pytorch_lightning as pl
@@ -24,7 +25,7 @@ class ProteinSolubilityDataModule(pl.LightningDataModule):
         train_dl_kwargs: dict,
         valid_dl_kwargs: dict,
         seed: int,
-        data_preprocessing: callable,
+        data_preprocessing: Callable,
         protein_max_seq_length: int,
         encoder_input_max_seq_len: int,
         labels_max_seq_len: int,

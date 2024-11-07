@@ -174,7 +174,7 @@ class ProteinSolubilityTask(MammalTask):
         tokenizer_op: ModularTokenizerOp,
         decoder_output: np.ndarray,
         decoder_output_scores: np.ndarray,
-    ) -> dict | None:
+    ) -> dict:
         """
         Extract predicted solubility class and scores
         expecting decoder output to be <SENTINEL_ID_0><0><EOS> or <SENTINEL_ID_0><1><EOS>

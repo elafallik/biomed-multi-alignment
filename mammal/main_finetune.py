@@ -1,4 +1,5 @@
 import os
+from collections.abc import Callable
 from functools import partial
 
 import hydra
@@ -35,7 +36,7 @@ def save_in_model_dir(
 
 
 def configure_optimizers(
-    module: LightningModuleDefault, opt_callable: callable, lr_sch_callable: callable
+    module: LightningModuleDefault, opt_callable: Callable, lr_sch_callable: Callable
 ) -> dict:
     """
     A callback use by lightning module to set the learning rate scheduler and the optimizer
@@ -55,8 +56,8 @@ def configure_optimizers(
 def module(
     model: Mammal,
     task: MammalTask,
-    opt_callable: callable,
-    lr_sch_callable: callable,
+    opt_callable: Callable,
+    lr_sch_callable: Callable,
     **kwargs,
 ) -> pl.LightningModule:
     """

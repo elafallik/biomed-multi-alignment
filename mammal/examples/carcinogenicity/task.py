@@ -1,11 +1,9 @@
-from functools import partial
 from typing import Any
 
 import numpy as np
 import pytorch_lightning as pl
 import torch
 from fuse.data.tokenizers.modular_tokenizer.op import ModularTokenizerOp
-from fuse.utils import NDict
 
 from mammal.examples.carcinogenicity.pl_data_module import CarcinogenicityDataModule
 from mammal.keys import (
@@ -161,7 +159,7 @@ class CarcinogenicityTask(MammalTask):
         tokenizer_op: ModularTokenizerOp,
         decoder_output: np.ndarray,
         decoder_output_scores: np.ndarray,
-    ) -> dict | None:
+    ) -> dict:
         negative_token_id = tokenizer_op.get_token_id("<0>")
         positive_token_id = tokenizer_op.get_token_id("<1>")
         label_id_to_int = {

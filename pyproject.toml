@@ -85,3 +85,11 @@ exclude_lines = ["pragma: no cover", "abc.abstractmethod", "@abstract"]
 
 #[tool.coverage.run]
 #omit = ["gene_benchmark/tests/*"]
+
+[tool.mypy]
+disable_error_code = [
+    "index",
+    "override",
+    "arg-type",
+    "union-attr"
+]

@@ -25,7 +25,7 @@ class MammalConfig(PretrainedConfig):
     """
 
     t5_config: T5Config = None  # base T5 model configuration
-    transformers_version: str = (
+    transformers_version: str | None = (
         None  # Need it to be compatible with 'PretrainedConfig.from_dict()' method
     )
     use_lora: bool = (

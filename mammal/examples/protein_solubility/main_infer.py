@@ -2,7 +2,6 @@ import os
 
 import click
 from fuse.data.tokenizers.modular_tokenizer.op import ModularTokenizerOp
-from fuse.data.utils.collates import CollateDefault
 
 from mammal.examples.protein_solubility.task import ProteinSolubilityTask
 from mammal.keys import CLS_PRED, SCORES

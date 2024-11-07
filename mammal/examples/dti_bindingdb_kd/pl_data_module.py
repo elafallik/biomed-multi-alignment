@@ -99,7 +99,7 @@ class DtiBindingdbKdDataModule(pl.LightningDataModule):
 
 
 def load_datasets(
-    split_type: str = "cold_split", split_column: str = ["Drug", "Target"]
+    split_type: str = "cold_split", split_column: list[str] | str = ["Drug", "Target"]
 ) -> dict[str, DatasetDefault]:
     """
     Automatically downloads (using tdc) the data and create dataset iterator for "train", "val" and "test".
