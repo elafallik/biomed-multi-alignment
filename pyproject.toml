@@ -8,7 +8,7 @@ requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mammal"
+name = "biomed-multi-alignment"
 description = "**MAMMAL** (**M**olecular **A**ligned **M**ulti-**M**odal **A**rchitecture and **L**anguage), a flexible, multi-domain architecture with an adaptable task prompt syntax."
 authors = [["IBM Research",],]
 author_email="moshiko.raboh@ibm.com",
