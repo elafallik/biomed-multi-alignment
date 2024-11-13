@@ -1,3 +1,6 @@
+[![arXiv](https://img.shields.io/badge/arXiv-2410.22367-b31b1b.svg)](https://arxiv.org/abs/2410.22367)
+[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg)](https://opensource.org/)
+![PyPI Downloads](https://static.pepy.tech/badge/biomed-multi-alignment)
 
 # biomed-multi-alignment
 
@@ -33,6 +36,13 @@ Follow the next steps to install MAMMAL in a new environment:
    git clone git@github.com:BiomedSciAI/biomed-multi-alignment.git
    pip install -e ./biomed-multi-alignment[examples]
    ```
+
+   Another option is to install directly from PyPI:
+   ```
+   pip install biomed-multi-alignment[examples]
+   ```
+
+
 
 
 # Examples
