@@ -52,6 +52,7 @@ While these tasks may not necessarily have State-of-the-Art results we can compa
 Additionally, since the pre-trained model was also trained on a protein-protein interaction task, we demonstrate inference using this task with ibm/biomed.omics.bl.sm.ma-ted-458m.
 
 ## Protein-Protein Interaction
+**This example supported in a [google-colab](https://colab.research.google.com/github/BiomedSciAI/biomed-multi-alignment/blob/main/tutorials/begginer_inference.ipynb)**
 A simple example for a task already supported by `ibm/biomed.omics.bl.sm.ma-ted-458m`:
 ```python
 import torch
