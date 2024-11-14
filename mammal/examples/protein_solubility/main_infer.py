@@ -9,7 +9,7 @@ from mammal.model import Mammal
 
 
 @click.command()
-@click.argument("finetune_output_dir")
+@click.argument("finetune_output_dir", default="")
 @click.argument(
     "protein_seq",
     default="NLMKRCTRGFRKLGKCTTLEEEKCKTLYPRGQCTCSDSKMNTHSCDCKSC",
@@ -28,17 +28,24 @@ def protein_solubility_infer(finetune_output_dir: str, protein_seq: str, device:
     :param finetune_output_dir: model_dir argument in finetuning
     :param protein_seq: amino acid sequence of a protein
     """
-    # load tokenizer
-    tokenizer_op = ModularTokenizerOp.from_pretrained(
-        os.path.join(finetune_output_dir, "tokenizer")
-    )
-
-    # Load model
-    nn_model = Mammal.from_pretrained(
-        pretrained_model_name_or_path=os.path.join(
-            finetune_output_dir, "best_epoch.ckpt"
+    if finetune_output_dir:
+        # load tokenizer and model from finetune_output_dir
+        tokenizer_op = ModularTokenizerOp.from_pretrained(
+            os.path.join(finetune_output_dir, "tokenizer")
         )
-    )
+        nn_model = Mammal.from_pretrained(
+            pretrained_model_name_or_path=os.path.join(
+                finetune_output_dir, "best_epoch.ckpt"
+            )
+        )
+    else:
+        # load tokenizer and model from huggingface
+        tokenizer_op = ModularTokenizerOp.from_pretrained(
+            "ibm/biomed.omics.bl.sm.ma-ted-458m.protein_solubility"
+        )
+        nn_model = Mammal.from_pretrained(
+            "ibm/biomed.omics.bl.sm.ma-ted-458m.protein_solubility"
+        )
     nn_model.eval()
     nn_model.to(device=device)
 

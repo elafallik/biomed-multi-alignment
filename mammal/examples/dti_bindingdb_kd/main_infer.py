@@ -8,7 +8,7 @@ from mammal.model import Mammal
 
 
 @click.command()
-@click.argument("finetune_output_dir")
+@click.argument("finetune_output_dir", default="")
 @click.argument(
     "target_seq",
     default="NLMKRCTRGFRKLGKCTTLEEEKCKTLYPRGQCTCSDSKMNTHSCDCKSC",
@@ -17,8 +17,8 @@ from mammal.model import Mammal
     "drug_seq",
     default="CC(=O)NCCC1=CNc2c1cc(OC)cc2",
 )
-@click.argument("norm_y_mean", type=float)
-@click.argument("norm_y_std", type=float)
+@click.argument("norm_y_mean", default=5.79384684128215, type=float)
+@click.argument("norm_y_std", default=1.33808027428196, type=float)
 @click.option(
     "--device", default="cpu", help="Specify the device to use (default: 'cpu')."
 )
@@ -55,17 +55,24 @@ def dti_bindingdb_kd_infer(
     :param norm_y_mean: specify the mean and std values used in fine-tuning
     :param norm_y_std: specify the mean and std values used in fine-tuning
     """
-    # load tokenizer
-    tokenizer_op = ModularTokenizerOp.from_pretrained(
-        os.path.join(finetune_output_dir, "tokenizer")
-    )
-
-    # Load model
-    nn_model = Mammal.from_pretrained(
-        pretrained_model_name_or_path=os.path.join(
-            finetune_output_dir, "best_epoch.ckpt"
+    if finetune_output_dir:
+        # load tokenizer and model from finetune_output_dir
+        tokenizer_op = ModularTokenizerOp.from_pretrained(
+            os.path.join(finetune_output_dir, "tokenizer")
         )
-    )
+        nn_model = Mammal.from_pretrained(
+            pretrained_model_name_or_path=os.path.join(
+                finetune_output_dir, "best_epoch.ckpt"
+            )
+        )
+    else:
+        # load tokenizer and model from huggingface
+        tokenizer_op = ModularTokenizerOp.from_pretrained(
+            "ibm/biomed.omics.bl.sm.ma-ted-458m.dti_bindingdb_pkd"
+        )
+        nn_model = Mammal.from_pretrained(
+            "ibm/biomed.omics.bl.sm.ma-ted-458m.dti_bindingdb_pkd"
+        )
     nn_model.eval()
     nn_model.to(device=device)
 
