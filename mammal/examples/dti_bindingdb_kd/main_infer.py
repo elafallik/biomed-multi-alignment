@@ -8,7 +8,11 @@ from mammal.model import Mammal
 
 
 @click.command()
-@click.argument("finetune_output_dir", default="")
+@click.option(
+    "--finetune_output_dir",
+    default=None,
+    help="Specify the model dir (default: None to download from huggingface).",
+)
 @click.argument(
     "target_seq",
     default="NLMKRCTRGFRKLGKCTTLEEEKCKTLYPRGQCTCSDSKMNTHSCDCKSC",
@@ -23,7 +27,7 @@ from mammal.model import Mammal
     "--device", default="cpu", help="Specify the device to use (default: 'cpu')."
 )
 def main(
-    finetune_output_dir: str,
+    finetune_output_dir: str | None,
     target_seq: str,
     drug_seq: str,
     norm_y_mean: float,
@@ -49,13 +53,13 @@ def dti_bindingdb_kd_infer(
     device: str,
 ):
     """
-    :param finetune_output_dir: model_dir argument in fine-tuning
+    :param finetune_output_dir: model_dir argument in fine-tuning or None for downloading from huggingface
     :param target_seq: amino acid sequence of a target
     :param drug_seq: smiles representation of a drug
     :param norm_y_mean: specify the mean and std values used in fine-tuning
     :param norm_y_std: specify the mean and std values used in fine-tuning
     """
-    if finetune_output_dir:
+    if finetune_output_dir is not None:
         # load tokenizer and model from finetune_output_dir
         tokenizer_op = ModularTokenizerOp.from_pretrained(
             os.path.join(finetune_output_dir, "tokenizer")

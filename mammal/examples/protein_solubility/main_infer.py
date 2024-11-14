@@ -9,7 +9,11 @@ from mammal.model import Mammal
 
 
 @click.command()
-@click.argument("finetune_output_dir", default="")
+@click.option(
+    "--finetune_output_dir",
+    default=None,
+    help="Specify the model dir (default: None to download from huggingface).",
+)
 @click.argument(
     "protein_seq",
     default="NLMKRCTRGFRKLGKCTTLEEEKCKTLYPRGQCTCSDSKMNTHSCDCKSC",
@@ -23,12 +27,14 @@ def main(finetune_output_dir: str, protein_seq: str, device: str):
     )
 
 
-def protein_solubility_infer(finetune_output_dir: str, protein_seq: str, device: str):
+def protein_solubility_infer(
+    finetune_output_dir: str | None, protein_seq: str, device: str
+):
     """
-    :param finetune_output_dir: model_dir argument in finetuning
+    :param finetune_output_dir: model_dir argument in finetuning or None for downloading from huggingface
     :param protein_seq: amino acid sequence of a protein
     """
-    if finetune_output_dir:
+    if finetune_output_dir is not None:
         # load tokenizer and model from finetune_output_dir
         tokenizer_op = ModularTokenizerOp.from_pretrained(
             os.path.join(finetune_output_dir, "tokenizer")
