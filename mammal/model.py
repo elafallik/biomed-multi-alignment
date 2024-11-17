@@ -53,6 +53,12 @@ class MammalConfig(PretrainedConfig):
         config = cls(**config_dict)
         return config
 
+    @classmethod
+    def get_deprecated_arguments(cls) -> list[str]:
+        """Property of deprecated arguments to support backward compatibility."""
+        deprecated_arguments = ["load_weights", "t5_pretrained_name"]
+        return deprecated_arguments
+
     def override(self, config_overrides: dict[str, Any]) -> None:
         """
         Override existing (loaded configuration)
@@ -410,6 +416,13 @@ class Mammal(ModelHubMixin, torch.nn.Module):
                         weights_only=False,
                     )
                     config = pl_ckpt_dict["config"]
+                    for deprecated_arg in MammalConfig.get_deprecated_arguments():
+                        # Remove deprecated arg if exists
+                        if hasattr(config, deprecated_arg):
+                            print(
+                                f"Found deprecated argument '{deprecated_arg}'. Deleting it!"
+                            )
+                            delattr(config, deprecated_arg)
 
             if isinstance(config, str):
                 # Config path was given or was located in the parent directory
