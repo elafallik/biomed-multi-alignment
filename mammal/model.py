@@ -391,6 +391,7 @@ class Mammal(ModelHubMixin, torch.nn.Module):
                 ) from e
 
         if pretrained_model_name_or_path.endswith(".ckpt"):
+            pl_ckpt_dict = None
             print(f"`.ckpt` file was located. {pretrained_model_name_or_path=}")
             if config is None:
                 # Trying to get the config from the `.ckpt` parent directory
@@ -398,7 +399,20 @@ class Mammal(ModelHubMixin, torch.nn.Module):
                     pretrained_model_name_or_path
                 )
                 config = os.path.join(pretrained_model_dirpath, CONFIG_NAME)
+
+                if not os.path.exists(config):
+                    print(
+                        "Couldn't find `config.json` file in the checkpoint's parent directory. Trying to fetch config from the Lightning checkpoint itself"
+                    )
+                    pl_ckpt_dict = torch.load(
+                        pretrained_model_name_or_path,
+                        map_location="cpu",
+                        weights_only=False,
+                    )
+                    config = pl_ckpt_dict["config"]
+
             if isinstance(config, str):
+                # Config path was given or was located in the parent directory
                 with open(config, encoding="utf-8") as f:
                     config = json.load(f)
                 config = MammalConfig.from_dict(config)
@@ -408,25 +422,29 @@ class Mammal(ModelHubMixin, torch.nn.Module):
                 config.override(config_overrides)
             model = cls(config)
 
-            pl_ckpt_dict = torch.load(
-                pretrained_model_name_or_path, map_location="cpu", weights_only=True
-            )
-            state_dict = pl_ckpt_dict["state_dict"]
-            lightning_model_prefix = "_model."
-            state_dict = {
-                (
-                    key[len(lightning_model_prefix) :]
-                    if key.startswith(lightning_model_prefix)
-                    else key
-                ): value
-                for key, value in state_dict.items()
-            }
-
-            if config.random_weights:
+            if hasattr(config, "random_weights") and config.random_weights:
                 print(
                     "Warning! You are loading random weights! To disable it, make sure to config 'random_weights' to False."
                 )
             else:
+                if pl_ckpt_dict is None:
+                    # Didn't load it before to fetch the config. Load it now to get the weights
+                    pl_ckpt_dict = torch.load(
+                        pretrained_model_name_or_path,
+                        map_location="cpu",
+                        weights_only=True,
+                    )
+
+                state_dict = pl_ckpt_dict["state_dict"]
+                lightning_model_prefix = "_model."
+                state_dict = {
+                    (
+                        key[len(lightning_model_prefix) :]
+                        if key.startswith(lightning_model_prefix)
+                        else key
+                    ): value
+                    for key, value in state_dict.items()
+                }
                 # Inject weights to model instance
                 model.load_state_dict(state_dict, strict=strict)
 
@@ -450,7 +468,7 @@ class Mammal(ModelHubMixin, torch.nn.Module):
                 pretrained_model_name_or_path, SAFETENSORS_SINGLE_FILE
             )
 
-            if config.random_weights:
+            if hasattr(config, "random_weights") and config.random_weights:
                 print(
                     "Warning! You are using random weights! To disable it, make sure to config 'random_weights' to False."
                 )
