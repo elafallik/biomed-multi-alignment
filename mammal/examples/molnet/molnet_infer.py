@@ -1,9 +1,8 @@
-import numpy as np
 import click
+import numpy as np
 import torch
 from fuse.data.tokenizers.modular_tokenizer.op import ModularTokenizerOp
 
-from mammal.model import Mammal
 from mammal.keys import (
     CLS_PRED,
     ENCODER_INPUTS_ATTENTION_MASK,
@@ -11,6 +10,7 @@ from mammal.keys import (
     ENCODER_INPUTS_TOKENS,
     SCORES,
 )
+from mammal.model import Mammal
 
 TASK_NAMES = ["BBBP", "TOXICITY", "FDA_APPR"]
 
@@ -39,22 +39,22 @@ def load_model(task_name: str, device: str) -> dict:
         case "TOXICITY":
             path = "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_clintox_tox"
         case "FDA_APPR":
-            path = "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_clintox_fda" 
-        case _:        
-            print(f"The {task_name=} is incorrect")       
-            
+            path = "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_clintox_fda"
+        case _:
+            print(f"The {task_name=} is incorrect")
+
     # Load Model and set to evaluation mode
     model = Mammal.from_pretrained(path)
     model.eval()
     model.to(device=device)
-    
+
     # Load Tokenizer
     tokenizer_op = ModularTokenizerOp.from_pretrained(path)
-       
+
     task_dict = dict(
         task_name=task_name,
         model=model,
-        tokenizer_op=tokenizer_op,        
+        tokenizer_op=tokenizer_op,
     )
     return task_dict
 
@@ -65,7 +65,7 @@ def process_model_output(
     decoder_output_scores: np.ndarray,
 ) -> dict:
     """
-    Extract predicted class and scores    
+    Extract predicted class and scores
     """
     negative_token_id = tokenizer_op.get_token_id("<0>")
     positive_token_id = tokenizer_op.get_token_id("<1>")
@@ -79,10 +79,10 @@ def process_model_output(
         scores = decoder_output_scores[
             classification_position, positive_token_id
         ]
-        
+
     ans = dict(
         pred=label_id_to_int.get(int(decoder_output[classification_position]), -1),
-        score=scores.item(),        
+        score=scores.item(),
     )
     return ans
 
@@ -91,15 +91,15 @@ def task_infer(task_dict: dict, smiles_seq: str) -> dict:
     task_name = task_dict["task_name"]
     model = task_dict["model"]
     tokenizer_op = task_dict["tokenizer_op"]
-    
+
     if task_name not in TASK_NAMES:
-        print(f"The {task_name=} is incorrect. Valid names are {TASK_NAMES}") 
-        
+        print(f"The {task_name=} is incorrect. Valid names are {TASK_NAMES}")
+
     # Create and load sample
     sample_dict = dict()
     # Formatting prompt to match pre-training syntax
     sample_dict[ENCODER_INPUTS_STR] = f"<@TOKENIZER-TYPE=SMILES><MOLECULAR_ENTITY><MOLECULAR_ENTITY_SMALL_MOLECULE><{task_name}><SENTINEL_ID_0><@TOKENIZER-TYPE=SMILES@MAX-LEN=2100><SEQUENCE_NATURAL_START>{smiles_seq}<SEQUENCE_NATURAL_END><EOS>"
-    
+
     # Tokenize
     tokenizer_op(
         sample_dict=sample_dict,
@@ -116,14 +116,14 @@ def task_infer(task_dict: dict, smiles_seq: str) -> dict:
         output_scores=True,
         return_dict_in_generate=True,
         max_new_tokens=5,
-    )    
-    
+    )
+
     # Post-process the model's output
     result = process_model_output(
         tokenizer_op=tokenizer_op,
         decoder_output=batch_dict[CLS_PRED][0],
         decoder_output_scores=batch_dict[SCORES][0],
-    )    
+    )
     return result
 
 
