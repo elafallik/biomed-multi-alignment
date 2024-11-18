@@ -14,11 +14,9 @@ from mammal.model import Mammal
 
 TASK_NAMES = ["BBBP", "TOXICITY", "FDA_APPR"]
 
+
 @click.command()
-@click.argument(
-    "task_name",
-    default="BBBP"
-)
+@click.argument("task_name", default="BBBP")
 @click.argument(
     "smiles_seq",
     default="C(Cl)Cl",
@@ -35,7 +33,7 @@ def main(task_name: str, smiles_seq: str, device: str):
 def load_model(task_name: str, device: str) -> dict:
     match task_name:
         case "BBBP":
-            path = "SagiPolaczek/test4Simona"   #"ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_bbbp"
+            path = "SagiPolaczek/test4Simona"  # "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_bbbp"
         case "TOXICITY":
             path = "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_clintox_tox"
         case "FDA_APPR":
@@ -76,9 +74,7 @@ def process_model_output(
     classification_position = 1
 
     if decoder_output_scores is not None:
-        scores = decoder_output_scores[
-            classification_position, positive_token_id
-        ]
+        scores = decoder_output_scores[classification_position, positive_token_id]
 
     ans = dict(
         pred=label_id_to_int.get(int(decoder_output[classification_position]), -1),
@@ -98,7 +94,9 @@ def task_infer(task_dict: dict, smiles_seq: str) -> dict:
     # Create and load sample
     sample_dict = dict()
     # Formatting prompt to match pre-training syntax
-    sample_dict[ENCODER_INPUTS_STR] = f"<@TOKENIZER-TYPE=SMILES><MOLECULAR_ENTITY><MOLECULAR_ENTITY_SMALL_MOLECULE><{task_name}><SENTINEL_ID_0><@TOKENIZER-TYPE=SMILES@MAX-LEN=2100><SEQUENCE_NATURAL_START>{smiles_seq}<SEQUENCE_NATURAL_END><EOS>"
+    sample_dict[ENCODER_INPUTS_STR] = (
+        f"<@TOKENIZER-TYPE=SMILES><MOLECULAR_ENTITY><MOLECULAR_ENTITY_SMALL_MOLECULE><{task_name}><SENTINEL_ID_0><@TOKENIZER-TYPE=SMILES@MAX-LEN=2100><SEQUENCE_NATURAL_START>{smiles_seq}<SEQUENCE_NATURAL_END><EOS>"
+    )
 
     # Tokenize
     tokenizer_op(
@@ -107,8 +105,12 @@ def task_infer(task_dict: dict, smiles_seq: str) -> dict:
         key_out_tokens_ids=ENCODER_INPUTS_TOKENS,
         key_out_attention_mask=ENCODER_INPUTS_ATTENTION_MASK,
     )
-    sample_dict[ENCODER_INPUTS_TOKENS] = torch.tensor(sample_dict[ENCODER_INPUTS_TOKENS], device=model.device)
-    sample_dict[ENCODER_INPUTS_ATTENTION_MASK] = torch.tensor(sample_dict[ENCODER_INPUTS_ATTENTION_MASK], device=model.device)
+    sample_dict[ENCODER_INPUTS_TOKENS] = torch.tensor(
+        sample_dict[ENCODER_INPUTS_TOKENS], device=model.device
+    )
+    sample_dict[ENCODER_INPUTS_ATTENTION_MASK] = torch.tensor(
+        sample_dict[ENCODER_INPUTS_ATTENTION_MASK], device=model.device
+    )
 
     # Generate Prediction
     batch_dict = model.generate(
