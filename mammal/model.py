@@ -134,7 +134,8 @@ class Mammal(ModelHubMixin, torch.nn.Module):
         if isinstance(samples, dict):
             batch_dict = samples
         else:
-            batch_dict = CollateDefault()(samples)
+            temp = CollateDefault()
+            batch_dict = temp(samples)
 
         input_embeddings = self._calculate_inputs_embeddings(batch_dict)
 

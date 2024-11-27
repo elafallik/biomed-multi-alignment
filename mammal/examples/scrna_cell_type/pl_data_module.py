@@ -17,7 +17,7 @@ from torch.utils.data.dataloader import DataLoader
 
 from mammal.keys import *  # noqa
 
-from .anndata_op import OpReadAnnData
+from anndata_op import OpReadAnnData
 
 
 class CellTypeDataModule(pl.LightningDataModule):
@@ -158,6 +158,7 @@ def load_datasets(
         data_path = Path(__file__).parent / data_path
     # read files
     anndata_object = anndata.read_h5ad(data_path)
+    anndata_object.obs['celltype'] = anndata_object.obs.cell_ontology_class  # todo changed
     preprocess_ann_data(anndata_object)
     anndata_dict = {}
     anndata_dict["all_data"] = anndata_object
@@ -200,7 +201,7 @@ def load_cell_type_mapping(
     Load metadata_extra_mapping.csv from the given dataset metadata folder,
     and return the values of a requested key and value columns as a dictionary.
     """
-    cell_type_mapping_file_path = Path(__file__).parent / "cell_type_mapping.csv"
+    cell_type_mapping_file_path = Path(__file__).parent / "cell_type_mapping-TS_liver.csv"  # todo changed
 
     #    this is new
     print(cell_type_mapping_file_path)
@@ -250,6 +251,7 @@ def preprocess_ann_data(anndata_object: anndata.AnnData):
 
 
 if __name__ == "__main__":
-    ds_dict = load_datasets("data/Zheng68k_filtered.h5ad", stratify_by=["label"])
+    # ds_dict = load_datasets("data/Zheng68k_filtered.h5ad", stratify_by=["label"])
+    ds_dict = load_datasets("data/TS_Liver.h5ad", stratify_by=["label"])
     print(ds_dict["train"][0])
     print(ds_dict["test"][0])

@@ -10,6 +10,7 @@ from fuse.data.tokenizers.modular_tokenizer.op import ModularTokenizerOp
 
 from mammal.examples.scrna_cell_type.pl_data_module import (
     CellTypeDataModule,
+    load_cell_type_mapping
 )
 from mammal.keys import (
     CLS_PRED,
@@ -30,20 +31,35 @@ from mammal.task import (
     MetricBase,
 )
 
-ALL_CLASS_LABELS = [
-    "[CL:0000794]",
-    "[CL:0001062]",
-    "[CL:0000939]",
-    "[CL:0000792]",
-    "[CL:0000236]",
-    "[CL:0001204]",
-    "[CL:0001054]",
-    "[CL:0000451]",
-    "[CL:0000895]",
-    "[CL:0000049]",
-    "[CL:0000546]",
-]
+# ALL_CLASS_LABELS = [
+#     "[CL:0000794]",
+#     "[CL:0001062]",
+#     "[CL:0000939]",
+#     "[CL:0000792]",
+#     "[CL:0000236]",
+#     "[CL:0001204]",
+#     "[CL:0001054]",
+#     "[CL:0000451]",
+#     "[CL:0000895]",
+#     "[CL:0000049]",
+#     "[CL:0000546]",
+# ]
 
+ALL_CLASS_LABELS = [  # todo changed
+    "[CL:0000235]",
+    "[CL:0000576]",
+    "[CL:1000398]",
+    "[CL:2000055]",
+    "[CL:0000623]",
+    "[CL:0000057]",
+    "[CL:0000182]",
+    "[CL:0002538]",
+    "[CL:0000084]",
+    "[CL:0000775]",
+    "[CL:0000786]",
+    "[CL:0000232]",
+    "[CL:0000115]",
+]
 
 class CellTypeTask(MammalTask):
     def __init__(
@@ -216,27 +232,3 @@ class CellTypeTask(MammalTask):
             )
 
         return ans
-
-
-def load_cell_type_mapping(
-    mapping_key="celltype", mapping_value="cell_type_ontology_term_id"
-):
-    """
-    Load metadata_extra_mapping.csv from the given dataset metadata folder,
-    and return the values of a requested key and value columns as a dictionary.
-    """
-    cell_type_mapping_file_path = Path(__file__).parent / "cell_type_mapping.csv"
-
-    #    this is new
-    print(cell_type_mapping_file_path)
-    if not os.path.exists(cell_type_mapping_file_path):
-        raise FileNotFoundError(str(cell_type_mapping_file_path) + "is not found")
-    else:
-        mapping_df = pd.read_csv(cell_type_mapping_file_path, index_col=False)
-        cell_type_mapping = dict(
-            zip(
-                mapping_df[mapping_key],
-                mapping_df[mapping_value],
-            )
-        )
-        return cell_type_mapping
