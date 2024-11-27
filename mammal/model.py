@@ -353,10 +353,6 @@ class Mammal(ModelHubMixin, torch.nn.Module):
         save_directory: Path,
         save_config_only: bool = False,
     ) -> None:
-        """
-        :param mode: either 'config', 'state_dict' or 'all'
-        :param metadata: metadata to store with the model
-        """
         print(f"Saving @ {save_directory}")
 
         # Define paths
