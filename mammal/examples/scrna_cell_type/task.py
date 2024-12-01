@@ -209,7 +209,7 @@ class CellTypeTask(MammalTask):
         decoder_output_scores: np.ndarray,
     ) -> dict | None:
         ans = None
-        all_class_label_ids = tokenizer_op.get_token_id(ALL_CLASS_LABELS)
+        all_class_label_ids = [tokenizer_op.get_token_id(label) for label in ALL_CLASS_LABELS]
         # label_id_to_int = {
         #     negative_token_id: 0,
         #     positive_token_id: 1,
